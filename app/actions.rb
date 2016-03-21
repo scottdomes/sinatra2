@@ -82,14 +82,19 @@ end
 
 post '/upvote/:id' do
   @song = Song.find(params[:id])
-  @song.upvotes += 1
-  @song.save
+  unless @song.votes.where(song_id: @song.id, user_id: session["user"].id) != []
+    @song.votes.create(up: true, user_id: session["user"].id)
+    @song.save
+  end
   redirect '/songs'
 end
 
 post '/downvote/:id' do
   @song = Song.find(params[:id])
-  @song.downvotes += 1
-  @song.save
+  binding.pry
+  unless @song.votes.where(song_id: @song.id, user_id: session["user"].id) != []
+    @song.votes.create(up: false, user_id: session["user"].id)
+    @song.save
+  end
   redirect '/songs'
 end
