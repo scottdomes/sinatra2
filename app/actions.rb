@@ -6,7 +6,10 @@ get '/' do
 end
 
 get '/songs' do
-  @songs = Song.all
+  @songs = Song.all.sort_by do |song| 
+    song.votes.where(up: true).length - song.votes.where(up: false).length
+  end.reverse
+
   erb :'songs/index'
 end
 
