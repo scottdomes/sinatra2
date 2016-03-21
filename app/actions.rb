@@ -1,4 +1,13 @@
 # Homepage (Root path)
+helpers do
+  def get_songs
+    @songs = Song.all.sort_by do |song| 
+      song.votes.where(up: true).length - song.votes.where(up: false).length
+    end.reverse
+  end
+end
+
+
 enable :sessions
 
 get '/' do
@@ -6,10 +15,7 @@ get '/' do
 end
 
 get '/songs' do
-  @songs = Song.all.sort_by do |song| 
-    song.votes.where(up: true).length - song.votes.where(up: false).length
-  end.reverse
-
+  get_songs
   erb :'songs/index'
 end
 
@@ -64,12 +70,15 @@ post '/users' do
 end
 
 post '/login' do
-  @user = User.find_by(name: params[:name])
+  @login_message = ""
+  @user = User.find_by(name: params[:name], password: params[:password])
   if @user
     session["user"] = @user
     redirect '/users'
   else
-    redirect '/songs'
+    @login_message = "Incorrent username or password"
+    get_songs
+    erb :'songs/index'
   end
 end
 

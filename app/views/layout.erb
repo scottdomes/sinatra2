@@ -26,13 +26,13 @@
     <% if session["user"] %>
       <ul class="nav navbar-nav">
         <li><a class="navbar-brand" href="#">You are logged in as <%= session["user"].name %></a></li>
-        <li><a>My Songs</a></li>
+        <li><a href="/users/<%= session["user"].id %>">My Songs</a></li>
       </ul>
       <form class="logout navbar-form navbar-right" method="POST" action="/logout">
         <button class="btn btn-danger btn-sm" type="submit">Logout</button>
       </form>
     <% else %>
-      <form class="login" method="POST" action="/login">
+      <form class="login navbar-form navbar-left" method="POST" action="/login">
         <div>
           <label>Username:</label>
           <input type="text" name="name">
@@ -46,6 +46,7 @@
         </div>
       </form>
     <% end %>
+    <p><%= @login_message %></p>
   </nav>
   <%= yield %>
 </body>
