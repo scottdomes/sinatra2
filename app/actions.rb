@@ -1,4 +1,6 @@
 # Homepage (Root path)
+enable :sessions
+
 get '/' do
   erb :index
 end
@@ -9,15 +11,20 @@ get '/songs' do
 end
 
 get '/songs/new' do
-  @song = Song.new
-  erb :'songs/new'
+  if session["user"]
+    @song = Song.new
+    erb :'songs/new'
+  else
+    redirect 'users/new'
+  end
 end
 
 post '/songs' do
   @song = Song.new(
     title: params[:title],
     author: params[:author],
-    url: params[:url]
+    url: params[:url],
+    user_id: session["user"].id
   )
   if @song.save
     redirect '/songs'
@@ -29,4 +36,60 @@ end
 get '/songs/:id' do
   @song = Song.find(params[:id])
   erb :'songs/show'
+end
+
+get '/users' do
+  @users = User.all
+  erb :'users/index'
+end
+
+get '/users/new' do
+  @user = User.new
+  erb :'users/new'
+end
+
+post '/users' do
+  @user = User.new(
+    name: params[:name],
+    password: params[:password],
+  )
+  if @user.save
+    redirect '/songs'
+  else 
+    erb :'users/new'
+  end
+end
+
+post '/login' do
+  @user = User.find_by(name: params[:name])
+  if @user
+    session["user"] = @user
+    redirect '/users'
+  else
+    redirect '/songs'
+  end
+end
+
+post '/logout' do
+  session["user"] = nil
+  redirect '/songs'
+end
+
+get '/users/:id' do
+  @user = User.find(params[:id])
+  erb :'users/show'
+end
+
+post '/upvote/:id' do
+  @song = Song.find(params[:id])
+  @song.upvotes += 1
+  @song.save
+  redirect '/songs'
+end
+
+post '/downvote/:id' do
+  @song = Song.find(params[:id])
+  @song.downvotes += 1
+  @song.save
+  redirect '/songs'
 end
