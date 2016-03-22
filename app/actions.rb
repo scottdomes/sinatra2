@@ -53,7 +53,9 @@ post '/songs' do
   if @song.save
     redirect '/songs'
   else 
-    erb :'messages/new'
+    @song_errors = @song.errors.full_messages
+    get_songs
+    erb :'songs/index'
   end
 end
 
@@ -91,7 +93,7 @@ post '/login' do
     session["user"] = @user
     redirect '/users'
   else
-    @login_message = "Incorrent username or password"
+    @login_message = "Incorrect username or password"
     get_songs
     erb :'songs/index'
   end
@@ -155,6 +157,7 @@ end
 
 post '/songs/delete' do
   @song = Song.find(params[:song_id])
+  # @DESTRoy ALLL VOTTEEEESSS
   if @song.destroy 
     redirect "/songs"
   end
