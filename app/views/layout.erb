@@ -26,7 +26,8 @@
     <% if session["user"] %>
       <ul class="nav navbar-nav">
         <li><a class="navbar-brand" href="#">You are logged in as <%= session["user"].name %></a></li>
-        <li><a href="/users/<%= session["user"].id %>">My Songs</a></li>
+        <li><a href="/users/<%= session["user"].id %>">My Profile</a></li>
+        <li><a href="/songs/new">New Song</a></li>
       </ul>
       <form class="logout navbar-form navbar-right" method="POST" action="/logout">
         <button class="btn btn-danger btn-sm" type="submit">Logout</button>

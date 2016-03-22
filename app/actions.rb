@@ -104,7 +104,9 @@ end
 
 post '/upvote/:id' do
   @song = Song.find(params[:id])
-  if @song.votes.where(song_id: @song.id, user_id: session["user"].id).empty?
+  if @song.votes.where(song_id: @song.id, user_id: session["user"].id, up: true).empty?
+    previous_vote = @song.votes.find_by(song_id: @song.id, user_id: session["user"].id)
+    previous_vote.destroy unless previous_vote.nil?
     @song.votes.create(up: true, user_id: session["user"].id)
     @song.save
   end
@@ -113,9 +115,35 @@ end
 
 post '/downvote/:id' do
   @song = Song.find(params[:id])
-  if @song.votes.where(song_id: @song.id, user_id: session["user"].id).empty?
+  if @song.votes.where(song_id: @song.id, user_id: session["user"].id, up: false).empty?
+    previous_vote = @song.votes.find_by(song_id: @song.id, user_id: session["user"].id)
+    previous_vote.destroy unless previous_vote.nil?
     @song.votes.create(up: false, user_id: session["user"].id)
     @song.save
   end
   redirect '/songs'
+end
+
+post '/review' do
+  @review = Review.new(
+    title: params[:title],
+    rating: params[:rating],
+    content: params[:content],
+    user_id: session["user"].id,
+    song_id: params[:song_id]
+  )
+  if @review.save
+    redirect "/songs/#{params[:song_id]}"
+  else 
+    redirect "/songs/#{params[:song_id]}"
+  end
+end
+
+post '/songs/review/delete' do
+  @review = Review.find(params[:review_id])
+  if @review.destroy
+    redirect "/songs/#{params[:song_id]}"
+  else 
+    redirect "/songs/#{params[:song_id]}"
+  end
 end
