@@ -5,6 +5,7 @@ helpers do
       song.votes.where(up: true).length - song.votes.where(up: false).length
     end.reverse
   end
+
   def get_user_vote(user, song)
     return if user.nil?
     vote = Vote.find_by(user_id: user.id, song_id: song.id)
@@ -14,6 +15,10 @@ helpers do
     else
       "downvote"
     end
+  end
+
+  def posted_review?(user, song)
+    user.reviews.find_by(song_id: song.id)
   end
 end
 
