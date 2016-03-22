@@ -5,6 +5,16 @@ helpers do
       song.votes.where(up: true).length - song.votes.where(up: false).length
     end.reverse
   end
+  def get_user_vote(user, song)
+    return if user.nil?
+    vote = Vote.find_by(user_id: user.id, song_id: song.id)
+    return if vote.nil?
+    if vote.up
+      "upvote"
+    else
+      "downvote"
+    end
+  end
 end
 
 
@@ -94,7 +104,7 @@ end
 
 post '/upvote/:id' do
   @song = Song.find(params[:id])
-  unless @song.votes.where(song_id: @song.id, user_id: session["user"].id) != []
+  if @song.votes.where(song_id: @song.id, user_id: session["user"].id).empty?
     @song.votes.create(up: true, user_id: session["user"].id)
     @song.save
   end
@@ -103,8 +113,7 @@ end
 
 post '/downvote/:id' do
   @song = Song.find(params[:id])
-  binding.pry
-  unless @song.votes.where(song_id: @song.id, user_id: session["user"].id) != []
+  if @song.votes.where(song_id: @song.id, user_id: session["user"].id).empty?
     @song.votes.create(up: false, user_id: session["user"].id)
     @song.save
   end
