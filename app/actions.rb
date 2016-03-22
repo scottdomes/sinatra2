@@ -152,3 +152,10 @@ post '/songs/review/delete' do
     redirect "/songs/#{params[:song_id]}"
   end
 end
+
+post '/songs/delete' do
+  @song = Song.find(params[:song_id])
+  if @song.destroy 
+    redirect "/songs"
+  end
+end

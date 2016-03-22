@@ -6,6 +6,7 @@
   <script src="/javascript/application.js"></script>
 
   <link href="/stylesheets/star-rating.css" media="all" rel="stylesheet" type="text/css" />
+  <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
 
     <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -28,27 +29,30 @@
 <body>
 
   <nav class="navbar navbar-default navbar-fixed-top">
+    <img class="navbar-brand" src="/img/food.svg">
+    <a href="/songs" class="navbar-brand">SongJam</a>
     <% if session["user"] %>
       <ul class="nav navbar-nav">
-        <li><a class="navbar-brand" href="#">You are logged in as <%= session["user"].name %></a></li>
         <li><a href="/users/<%= session["user"].id %>">My Profile</a></li>
         <li><a href="/songs/new">New Song</a></li>
       </ul>
+      <p>Logged in as <%= session["user"].name %></p>
       <form class="logout navbar-form navbar-right" method="POST" action="/logout">
         <button class="btn btn-danger btn-sm" type="submit">Logout</button>
       </form>
     <% else %>
-      <form class="login navbar-form navbar-left" method="POST" action="/login">
+      <form class="login navbar-form navbar-right" method="POST" action="/login">
         <div>
           <label>Username:</label>
           <input type="text" name="name">
         </div>
         <div>
           <label>Password:</label>
-          <input type="text" name="password">
+          <input type="password" name="password">
         </div>
         <div>
           <button class="btn btn-success btn-sm" type="submit">Log In</button>
+          <a href="/users/new"><button type="button" class="btn btn-success btn-sm" >Sign up</button></a>
         </div>
       </form>
     <% end %>
